@@ -1,17 +1,24 @@
-#include <stdio.h>
+/*
+File: Program1.c
+Description: This source file implements Program 1 of ESE Project 1
+Author: Mike Fruge & Mark Hinkle
+Tools: GCC99 library & GNU toolchain
+*/
 
+#include <stdio.h>
+#include <stdint.h>
 
 
 struct input{
-	int value;
-	int radix;
-	int Op_Size;
-}
+	uint32_t value;
+	uint32_t radix;
+	uint32_t Op_Size;
+};
 
 int main(int argc, char const *argv[])
 {
 
-	input inputs[11];
+	struct input inputs[11];
 
 	inputs[0].value = -6;
 	inputs[0].radix = 10;
@@ -57,6 +64,18 @@ int main(int argc, char const *argv[])
 	inputs[10].value = -32701;
 	inputs[10].radix = 10;
 	inputs[10].Op_Size = 16;
+
+	int i=0;
+
+	for(i=0; i<11; i++)
+	{
+		printf("Input:	Value %d	Radix %d		Operand Size %d\r\n", inputs[i].value, inputs[i].radix, inputs[i].Op_Size);
+		printf("Output:		Value 		Maximum		Minimum");
+	}
 	
 	return 0;
 }
+
+
+
+void printBinaryABS(int value)

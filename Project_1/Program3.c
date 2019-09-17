@@ -1,19 +1,31 @@
+/*
+File: Program3.c
+Description: This source file implements Program 3 of ESE Project 1
+Author: Mike Fruge & Mark Hinkle
+Tools: GCC99 library & GNU toolchain
+Sources: https://www.geeksforgeeks.org/rotate-bits-of-an-integer/
+*/
+
+
+
 #include <stdio.h>
+#include <stdint.h>
 
 
-#define LEFT 	0
-#define RIGHT 	1
+#define LEFT 	(0)
+#define RIGHT 	(1)
 
-void testLast4Bits(int value);
-int ReverseByteOrder(int value);
-unsigned short rotateBits(int value, int num_bits, int direction);
-void printBinary(int value);
+
+void testLast4Bits(uint16_t value);
+int ReverseByteOrder(uint16_t value);
+unsigned short rotateBits(uint16_t value, uint16_t num_bits, uint16_t direction);
+void printBinary(uint16_t value);
 
 
 int main(int argc, char const *argv[])
 {
-	int Data = 0xCAFE;
-	int nextData = 0x0000;
+	uint16_t Data = 0xCAFE;
+	uint16_t nextData = 0x0000;
 	printf("0x%04X\r\n", Data);
 
 	/* Test if 3 of the last 4 bits are on, and return the value of the last 4 bits*/
@@ -32,7 +44,7 @@ int main(int argc, char const *argv[])
 }
 
 
-void testLast4Bits(int value)
+void testLast4Bits(uint16_t value)
 {
 	int compare = 0xF;
 	int result = (compare) & (value);
@@ -48,7 +60,7 @@ void testLast4Bits(int value)
 	printBinary(result);
 }
 
-void printBinary(int value)
+void printBinary(uint16_t value)
 {
 	printf("0b'");
 
@@ -95,7 +107,7 @@ void printBinary(int value)
 	printf("\r\n");
 }
 
-int ReverseByteOrder(int value)
+int ReverseByteOrder(uint16_t value)
 {
 	int ModData = 0x0000;
 	int extraction = 0x00FF;
@@ -120,17 +132,17 @@ int ReverseByteOrder(int value)
 }
 
 
-unsigned short rotateBits(int value, int num_bits, int direction)		/* https://www.geeksforgeeks.org/rotate-bits-of-an-integer/ */
+uint16_t rotateBits(uint16_t value, uint16_t num_bits, uint16_t direction)		/* https://www.geeksforgeeks.org/rotate-bits-of-an-integer/ */
 {
 
 	if(direction == LEFT)	// Left
 	{
-		return (unsigned short) ((value << num_bits) | (value >> (16 - num_bits)));
+		return (value << num_bits) | (value >> (16 - num_bits));
 	}
 
 	else if (direction == RIGHT)	// Right
 	{
-		return (unsigned short) ((value >> num_bits) | (value) << (16 - num_bits));
+		return (value >> num_bits) | (value) << (16 - num_bits);
 	}
 
 	else return -1;

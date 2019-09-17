@@ -1,11 +1,22 @@
-#include <stdio.h>
+/*
+File: Program2.c
+Description: This source file implements Program 2 of ESE Project 1
+Author: Mike Fruge & Mark Hinkle
+Tools: GCC99 library & GNU toolchain
+*/
 
-#define NUM_INPUTS	20
+
+
+#include <stdio.h>
+#include <stdint.h>
+
+#define NUM_INPUTS	(20)
+
 int main(int argc, char const *argv[])
 {
 	char character;
-	char* catagory;
-	int i=0;
+	char* catagory = NULL;
+	uint16_t i=0;
 	char code[] = {66,114,117,99,101,32,83,97,121,115,32,72,105,33,7,9,50,48,49,57};
 
 	for(i=0; i<NUM_INPUTS; i++)
