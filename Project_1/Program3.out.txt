@@ -1,0 +1,12 @@
+0xCAFE
+true
+0b'1110
+0X FECA
+false
+0b'1010
+0X ECAF
+true
+0b'1111
+0X FECA
+false
+0b'1010
