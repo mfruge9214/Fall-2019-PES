@@ -9,12 +9,12 @@ Tools: GCC99 library & GNU toolchain
 #include <stdint.h>
 
 #define OCT_SZ      8
-#define DEC_SS      10
+#define DEC_SZ      10
 #define HEX_SZ		16
 
-#define NIBBLE      4
-#define BYTE        8
-#define 2BYTE       16
+#define NIBBLE_SZ   4
+#define BYTE_SZ     8
+#define BYTE2_SZ    16
 
 #define MAX_UINT4   15
 #define MIN_INT4    -8
@@ -22,6 +22,11 @@ Tools: GCC99 library & GNU toolchain
 #define MIN_INT8    -128
 #define MAX_UINT16  65535
 #define MIN_INT16   -32768
+
+#define	no_error       0b0000
+#define	invalid_radix  0b0001
+#define	invalid_opsize 0b0010
+#define	invalid_val    0b0100
 
 struct input{
 	uint32_t value;
@@ -47,10 +52,11 @@ int question1(int val, int radix, int op_size)
 {
 
 	int DEC_VAL, ABS_VAL, temp, cnt;
-	int BIN_VAL[op_size] = {0}; 
-	int SOC_VAL[op_size] = {0};
-	int STC_VAL[op_size] = {0};
-	int SAM_VAL[op_size] = {0};
+	int BIN_VAL[op_size], SOC_VAL[op_size], STC_VAL[op_size], SAM_VAL[op_size];
+	// int BIN_VAL[op_size] = {0}; 
+	// int SOC_VAL[op_size] = {0};
+	// int STC_VAL[op_size] = {0};
+	// int SAM_VAL[op_size] = {0};
 
 	int MAX, MIN = 0;
 
@@ -74,7 +80,7 @@ int question1(int val, int radix, int op_size)
 			DEC_VAL = val;
 		}
 
-		if(op_size == NIBBLE) 
+		if(op_size == NIBBLE_SZ) 
 		{
 			if((DEC_VAL > MAX_UINT4) || (DEC_VAL < MIN_INT4)) 
 			{
@@ -82,14 +88,14 @@ int question1(int val, int radix, int op_size)
 			}
 			MAX = MAX_UINT4;
 		}
-		else if(op_size == BYTE) {
+		else if(op_size == BYTE_SZ) {
 			if((DEC_VAL > MAX_UINT8) || (DEC_VAL < MIN_INT8)) 
 			{
 				err_flag |= invalid_val;
 			}
 			MAX = MAX_UINT8;
 		}
-		else if(op_size == 2BYTE) {
+		else if(op_size == BYTE2_SZ) {
 			if((DEC_VAL > MAX_UINT16) || (DEC_VAL < MIN_INT16)) 
 			{
 				err_flag |= invalid_val;
@@ -116,7 +122,7 @@ int question1(int val, int radix, int op_size)
 		{
 			printf("  Value is outside operand size bounds\n");
 		}
-
+		printf("\n\n");
 		//exit function
 		return err_flag;
 	}
@@ -129,7 +135,7 @@ int question1(int val, int radix, int op_size)
 	}
 	else
 	{
-		ABS_VAL = DEC_VAL
+		ABS_VAL = DEC_VAL;
 	}
 
 
@@ -143,10 +149,10 @@ int question1(int val, int radix, int op_size)
 		temp = temp / 2;
 		cnt++;
 	}
-
-
+    
+    
 	/*********** Print Table **********/
-	printf("Input:    Value %d,    radix %d,    operand size %d\n" val, radix, op_size");              //header1
+	printf("Input:    Value %d,    radix %d,    operand size %d\n", val, radix, op_size);              //header1
 	printf("Output:                      Value                  Maximum                  Minimum\n");  //header2
 
 
@@ -179,8 +185,8 @@ int question1(int val, int radix, int op_size)
 	printf("                       %d                    %d\n", MAX, MIN);
 
 	//Hexadecimal (abs)
-	printf("Hexadecimal (abs)            %x", ABS_VAL);
-	printf("                       %x                    %x\n", MAX, MIN);
+	printf("Hexadecimal (abs)            0x%x", ABS_VAL);
+	printf("                       0x%x                    0x%x\n", MAX, MIN);
 
 	//Signed One's Compliment
 
@@ -189,7 +195,7 @@ int question1(int val, int radix, int op_size)
 	//Sign-Magnitude
 
 
-
+	printf("\n\n");
 	return err_flag;
 }
 
@@ -245,19 +251,12 @@ int main(int argc, char const *argv[])
 	inputs[10].Op_Size = 16;
 
 	int i=0;
+    int ret[11];
 
 	for(i=0; i<11; i++)
 	{
-        /*
-		printf("Input:	Value %d	Radix %d		Operand Size %d\r\n", inputs[i].value, inputs[i].radix, inputs[i].Op_Size);
-		printf("Output:		Value 		Maximum		Minimum");
-        */
-        
+        ret[i] = question1(inputs[i].value, inputs[i].radix, inputs[i].Op_Size);
 	}
 	
 	return 0;
 }
-
-
-
-void printBinaryABS(int value)
