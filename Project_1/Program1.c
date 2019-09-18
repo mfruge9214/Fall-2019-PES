@@ -36,16 +36,18 @@ struct input{
 
 int oct_to_dec(int oct)
 {
-	/*
 	int dec = 0;
+	int base = 1;
 	int digit;
-	int count = 0;
 
 	while(oct) {
 		digit = oct % 10;
-		for(i)
+		oct = oct / 10;
+		dec += (digit * base);
+		base = base * 8;
 	}
-	In progress    */
+	
+	return dec;
 }
 
 int question1(int val, int radix, int op_size)
@@ -129,16 +131,9 @@ int question1(int val, int radix, int op_size)
 
 
 	/********** Compute Values ************/
-	if(DEC_VAL < 0) 
-	{
-		ABS_VAL = -DEC_VAL;
-	}
-	else
-	{
-		ABS_VAL = DEC_VAL;
-	}
-
-
+	if(DEC_VAL < 0) ABS_VAL = -DEC_VAL;
+	else            ABS_VAL = DEC_VAL;
+	
 	temp = ABS_VAL;
 	cnt = 0;
 
@@ -148,6 +143,74 @@ int question1(int val, int radix, int op_size)
 		BIN_VAL[cnt] = temp % 2;
 		temp = temp / 2;
 		cnt++;
+	}
+
+	// Signed Binary Arrays
+	if(DEC_VAL < 0)
+	{
+		// Fill arrays
+		for(int i = 0; i < op_size; i++)
+		{
+			SAM_VAL[i] = BIN_VAL[i];       // Sign and Magnitude
+			SOC_VAL[i] = !(BIN_VAL[i]);    // Signed Ones Compliment
+			STC_VAL[i] = SOC_VAL[i];       // Signed Twos Compliment
+		}
+
+		// Make sure last bit of SAM can signify sign - if not show error
+		if(SAM_VAL[op_size - 1] == 0)
+		{
+			SAM_VAL[op_size - 1] = 1;
+		}
+		else
+		{
+			SAM_VAL[0] = 2;     // error
+		}
+
+		// Make sure the SOC binary string is seen as negative - if not show error
+		if(SOC_VAL[op_size - 1] != 1)
+		{
+			SOC_VAL[0] = 2;     // error
+		}
+
+		// Change STC_VAL from a ones compliment to a twos compliment
+		cnt = 0;
+		while(cnt < op_size)
+		 {
+			if(STC_VAL[cnt] == 1) 
+			{
+				STC_VAL[cnt] = 0;
+				cnt++;
+			}
+			else
+			{
+				STC_VAL[cnt] = 1;
+				break;
+			}
+		}
+
+		// Make sure the STC binary string is seen as negative - if not show error
+		if(SOC_VAL[op_size - 1] != 1)
+		{
+			STC_VAL[0] = 2;     // error
+		}
+	}
+	else
+	{
+		if(BIN_VAL[op_size - 1] == 1) 
+		{
+			SAM_VAL[0] = 2;     // error
+			SOC_VAL[0] = 2;     // error
+			STC_VAL[0] = 2;     // error
+		}
+		else
+		{
+			for(int i = 0; i < op_size; i++)
+			{
+				SAM_VAL[i] = BIN_VAL[i];       // Sign and Magnitude
+				SOC_VAL[i] = BIN_VAL[i];       // Signed Ones Compliment
+				STC_VAL[i] = BIN_VAL[i];       // Signed Twos Compliment
+			}
+		}
 	}
     
     
@@ -189,11 +252,88 @@ int question1(int val, int radix, int op_size)
 	printf("                       0x%x                    0x%x\n", MAX, MIN);
 
 	//Signed One's Compliment
+	printf("Signed One's Compliment      ");
+	if(SOC_VAL[0] == 2) 
+	{
+		printf("Error     ");
+	}
+	else
+	{
+		printf("0b");
+		for(int i = (op_size - 1); i >= 0; i--) 
+		{
+			printf("%d", SOC_VAL[i]);
+		}
+	}
 
-	//Signed Two's Compliment 
+	printf("                 0b0");
+	for(int i = 1; i < op_size; i++)
+	{
+		printf("1");
+	}
+
+	printf("                 0b1");
+	for(int i = 1; i < op_size; i++)
+	{
+		printf("0");
+	}
+	printf("\n");
+
+	//Signed Two's Compliment
+	printf("Signed Two's Compliment      ");
+	if(STC_VAL[0] == 2) 
+	{
+		printf("Error     ");
+	}
+	else
+	{
+		printf("0b");
+		for(int i = (op_size - 1); i >= 0; i--) 
+		{
+			printf("%d", STC_VAL[i]);
+		}
+	}
+
+	printf("                 0b0");
+	for(int i = 1; i < op_size; i++)
+	{
+		printf("1");
+	}
+
+	printf("                 0b1");
+	for(int i = 1; i < op_size; i++)
+	{
+		printf("0");
+	}
+	printf("\n"); 
 
 	//Sign-Magnitude
+	printf("Sign-Magnitude               ");
+	if(SAM_VAL[0] == 2) 
+	{
+		printf("Error     ");
+	}
+	else
+	{
+		printf("0b");
+		for(int i = (op_size - 1); i >= 0; i--) 
+		{
+			printf("%d", SAM_VAL[i]);
+		}
+	}
 
+	printf("                 0b0");
+	for(int i = 1; i < op_size; i++)
+	{
+		printf("1");
+	}
+
+	printf("                 0b1");
+	for(int i = 1; i < op_size; i++)
+	{
+		printf("1");
+	}
+	printf("\n"); 
 
 	printf("\n\n");
 	return err_flag;
