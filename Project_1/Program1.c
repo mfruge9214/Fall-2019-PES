@@ -22,10 +22,10 @@ Tools: GCC99 library & GNU toolchain
 #define MAX_UINT16  65535
 #define MIN_INT16   -32768
 
-#define	no_error       0b0000
-#define	invalid_radix  0b0001
-#define	invalid_opsize 0b0010
-#define	invalid_val    0b0100
+#define	NO_ERROR       0b0000
+#define	INVALID_RADIX  0b0001
+#define	INVALID_OPSIZE 0b0010
+#define	INVALID_VAL    0b0100
 
 struct input{
 	uint32_t value;
@@ -33,7 +33,6 @@ struct input{
 	uint32_t Op_Size;
 };
 
-int Ones_Compliment(int value, int op_size);
 
 int oct_to_dec(int oct)
 {
@@ -56,74 +55,74 @@ int oct_to_dec(int oct)
 int question1(int val, int radix, int op_size)
 {
 	printf("Input:    Value %d,    radix %d,    operand size %d\n", val, radix, op_size);              //header1
-	int DEC_VAL, ABS_VAL, temp, cnt;
-	int BIN_VAL[op_size], SOC_VAL[op_size], STC_VAL[op_size], SAM_VAL[op_size];
-	// int BIN_VAL[op_size] = {0}; 
-	// int SOC_VAL[op_size] = {0};
-	// int STC_VAL[op_size] = {0};
-	// int SAM_VAL[op_size] = {0};
+	int dec_val, abs_val, temp, cnt;
+	int bin_val[op_size], soc_val[op_size], stc_val[op_size], sam_val[op_size];
+	// int bin_val[op_size] = {0}; 
+	// int soc_val[op_size] = {0};
+	// int stc_val[op_size] = {0};
+	// int sam_val[op_size] = {0};
 
 	int MAX, MIN = 0;
 
 
 	/********** Check for errors **********/
-	uint8_t err_flag = no_error;
+	uint8_t err_flag = NO_ERROR;
 
 	if((radix != OCT_SZ) && (radix != DEC_SZ) && (radix != HEX_SZ)) 
 	{
-		err_flag |= invalid_radix;
+		err_flag |= INVALID_RADIX;
 	}
 	else 
 	{
 		/* Compute Decimal Value */
 		if(radix == OCT_SZ) 
 		{
-			DEC_VAL = oct_to_dec(val);
+			dec_val = oct_to_dec(val);
 		}
 		else 
 		{               
-			DEC_VAL = val;
+			dec_val = val;
 		}
 
 		if(op_size == NIBBLE_SZ) 
 		{
-			if((DEC_VAL > MAX_UINT4) || (DEC_VAL < MIN_INT4)) 
+			if((dec_val > MAX_UINT4) || (dec_val < MIN_INT4)) 
 			{
-				err_flag |= invalid_val;
+				err_flag |= INVALID_VAL;
 			}
 			MAX = MAX_UINT4;
 		}
 		else if(op_size == BYTE_SZ) {
-			if((DEC_VAL > MAX_UINT8) || (DEC_VAL < MIN_INT8)) 
+			if((dec_val > MAX_UINT8) || (dec_val < MIN_INT8)) 
 			{
-				err_flag |= invalid_val;
+				err_flag |= INVALID_VAL;
 			}
 			MAX = MAX_UINT8;
 		}
 		else if(op_size == BYTE2_SZ) {
-			if((DEC_VAL > MAX_UINT16) || (DEC_VAL < MIN_INT16)) 
+			if((dec_val > MAX_UINT16) || (dec_val < MIN_INT16)) 
 			{
-				err_flag |= invalid_val;
+				err_flag |= INVALID_VAL;
 			}
 			MAX = MAX_UINT16;
 		}
 		else {
-			err_flag |= invalid_opsize;
+			err_flag |= INVALID_OPSIZE;
 		}
 	}
 
 	if(err_flag) 
 	{
 		printf("Invalid Input(s) to function:\n");
-		if(err_flag & invalid_radix) 
+		if(err_flag & INVALID_RADIX) 
 		{
 			printf("  Invalid radix value (only expects input of 8, 10, or 16)\n");
 		}
-		if(err_flag & invalid_opsize) 
+		if(err_flag & INVALID_OPSIZE) 
 		{
 			printf("  Invalid operand size (only expects input of 4, 8, or 16)\n");
 		}
-		if(err_flag & invalid_val)
+		if(err_flag & INVALID_VAL)
 		{
 			printf("  Value is outside operand size bounds\n");
 		}
@@ -134,84 +133,84 @@ int question1(int val, int radix, int op_size)
 
 
 	/********** Compute Values ************/
-	if(DEC_VAL < 0) ABS_VAL = -DEC_VAL;
-	else            ABS_VAL = DEC_VAL;
+	if(dec_val < 0) abs_val = -dec_val;
+	else            abs_val = dec_val;
 	
-	temp = ABS_VAL;
+	temp = abs_val;
 	cnt = 0;
 
 	// Binary (abs)
 	while(temp)
 	{
-		BIN_VAL[cnt] = temp % 2;
+		bin_val[cnt] = temp % 2;
 		temp = temp / 2;
 		cnt++;
 	}
 
 	// Signed Binary Arrays
-	if(DEC_VAL < 0)
+	if(dec_val < 0)
 	{
 		// Fill arrays
 		for(int i = 0; i < op_size; i++)
 		{
-			SAM_VAL[i] = BIN_VAL[i];       // Sign and Magnitude
-			SOC_VAL[i] = !(BIN_VAL[i]);    // Signed Ones Compliment
-			STC_VAL[i] = SOC_VAL[i];       // Signed Twos Compliment
+			sam_val[i] = bin_val[i];       // Sign and Magnitude
+			soc_val[i] = !(bin_val[i]);    // Signed Ones Compliment
+			stc_val[i] = soc_val[i];       // Signed Twos Compliment
 		}
 
 		// Make sure last bit of SAM can signify sign - if not show error
-		if(SAM_VAL[op_size - 1] == 0)
+		if(sam_val[op_size - 1] == 0)
 		{
-			SAM_VAL[op_size - 1] = 1;
+			sam_val[op_size - 1] = 1;
 		}
 		else
 		{
-			SAM_VAL[0] = 2;     // error
+			sam_val[0] = 2;     // error
 		}
 
 		// Make sure the SOC binary string is seen as negative - if not show error
-		if(SOC_VAL[op_size - 1] != 1)
+		if(soc_val[op_size - 1] != 1)
 		{
-			SOC_VAL[0] = 2;     // error
+			soc_val[0] = 2;     // error
 		}
 
-		// Change STC_VAL from a ones compliment to a twos compliment
+		// Change stc_val from a ones compliment to a twos compliment
 		cnt = 0;
 		while(cnt < op_size)
 		 {
-			if(STC_VAL[cnt] == 1) 
+			if(stc_val[cnt] == 1) 
 			{
-				STC_VAL[cnt] = 0;
+				stc_val[cnt] = 0;
 				cnt++;
 			}
 			else
 			{
-				STC_VAL[cnt] = 1;
+				stc_val[cnt] = 1;
 				break;
 			}
 		}
 
 		// Make sure the STC binary string is seen as negative - if not show error
-		if(SOC_VAL[op_size - 1] != 1)
+		if(soc_val[op_size - 1] != 1)
 		{
-			STC_VAL[0] = 2;     // error
+			stc_val[0] = 2;     // error
 		}
 	}
 	else
 	{
-		if(BIN_VAL[op_size - 1] == 1) 
+		if(bin_val[op_size - 1] == 1) 
 		{
-			SAM_VAL[0] = 2;     // error
-			SOC_VAL[0] = 2;     // error
-			STC_VAL[0] = 2;     // error
+			sam_val[0] = 2;     // error
+			soc_val[0] = 2;     // error
+			stc_val[0] = 2;     // error
 		}
 		else
 		{
 			for(int i = 0; i < op_size; i++)
 			{
-				SAM_VAL[i] = BIN_VAL[i];       // Sign and Magnitude
-				SOC_VAL[i] = BIN_VAL[i];       // Signed Ones Compliment
-				STC_VAL[i] = BIN_VAL[i];       // Signed Twos Compliment
+				sam_val[i] = bin_val[i];       // Sign and Magnitude
+				soc_val[i] = bin_val[i];       // Signed Ones Compliment
+				stc_val[i] = bin_val[i];       // Signed Twos Compliment
 			}
 		}
 	}
@@ -225,7 +224,7 @@ int question1(int val, int radix, int op_size)
 	printf("Binary (abs)                 0b");
 	for(int i = (op_size - 1); i >= 0; i--) 
 	{
-		printf("%d", BIN_VAL[i]);
+		printf("%d", bin_val[i]);
 	}
 
 	printf("                 0b");
@@ -242,20 +241,20 @@ int question1(int val, int radix, int op_size)
 	printf("\n");
 
 	//Octal (abs)
-	printf("Octal (abs)                  %o", ABS_VAL);
+	printf("Octal (abs)                  %o", abs_val);
 	printf("                       %o                    %o\n", MAX, MIN);
 
 	//Decimal (abs)
-	printf("Decimal (abs)                %d", ABS_VAL);
+	printf("Decimal (abs)                %d", abs_val);
 	printf("                       %d                    %d\n", MAX, MIN);
 
 	//Hexadecimal (abs)
-	printf("Hexadecimal (abs)            0x%x", ABS_VAL);
+	printf("Hexadecimal (abs)            0x%x", abs_val);
 	printf("                       0x%x                    0x%x\n", MAX, MIN);
 
 	//Signed One's Compliment
 	printf("Signed One's Compliment      ");
-	if(SOC_VAL[0] == 2) 
+	if(soc_val[0] == 2) 
 	{
 		printf("Error     ");
 	}
@@ -264,7 +263,7 @@ int question1(int val, int radix, int op_size)
 		printf("0b");
 		for(int i = (op_size - 1); i >= 0; i--) 
 		{
-			printf("%d", SOC_VAL[i]);
+			printf("%d", soc_val[i]);
 		}
 	}
 
@@ -283,7 +282,7 @@ int question1(int val, int radix, int op_size)
 
 	//Signed Two's Compliment
 	printf("Signed Two's Compliment      ");
-	if(STC_VAL[0] == 2) 
+	if(stc_val[0] == 2) 
 	{
 		printf("Error     ");
 	}
@@ -292,7 +291,7 @@ int question1(int val, int radix, int op_size)
 		printf("0b");
 		for(int i = (op_size - 1); i >= 0; i--) 
 		{
-			printf("%d", STC_VAL[i]);
+			printf("%d", stc_val[i]);
 		}
 	}
 
@@ -311,7 +310,7 @@ int question1(int val, int radix, int op_size)
 
 	//Sign-Magnitude
 	printf("Sign-Magnitude               ");
-	if(SAM_VAL[0] == 2) 
+	if(sam_val[0] == 2) 
 	{
 		printf("Error     ");
 	}
@@ -320,7 +319,7 @@ int question1(int val, int radix, int op_size)
 		printf("0b");
 		for(int i = (op_size - 1); i >= 0; i--) 
 		{
-			printf("%d", SAM_VAL[i]);
+			printf("%d", sam_val[i]);
 		}
 	}
 
@@ -397,9 +396,7 @@ int main(int argc, char const *argv[])
 
 	for(i=0; i<11; i++)
 	{
-        // ret[i] = question1(inputs[i].value, inputs[i].radix, inputs[i].Op_Size);
         question1(inputs[i].value, inputs[i].radix, inputs[i].Op_Size);
-        // q1(inputs[i].value, inputs[i].radix, inputs[i].Op_Size);
 	}
 	
 	return 0;
